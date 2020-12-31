@@ -5,7 +5,7 @@ import sys
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://electro:1234@localhost:5432/fswebdev_examples'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://my_user:my_pass4@localhost:5432/fswebdev_examples'
 db = SQLAlchemy(app)
 
 # Create class to get todo records from DB
