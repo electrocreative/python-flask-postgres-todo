@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <title>Scott's To-Do App</title>
+        <!-- Create a style class that disables visibility of elements -->
+        <style>
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Create a div that is hidden by default, but displays a message upon caught errors with below .catch function-->
+        <div id="error" class="hidden">Something went wrong!</div>
+        <!-- Create a form to allow for submission of new todo items -->
+        <!-- Note that methods and route actions no longer need to be assigned to the form as we will be using fetch to perform this -->
+        <form id="form1">
+            <!-- Create input text field and assign an identity -->
+            <input type="text" id="description" name="description" />
+            <!-- Create a submit button and assign button text -->
+            <input type="submit" value="Create" />
+        </form>
+        <!-- Loop through all records returned from default render_template route in app.py, and display each record as a list item -->
+        <ul>
+            {% for d in data %}
+            <li>{{ d.description}}</li>
+            {% endfor %}
+        </ul>
+        <!-- Create script to implement AJAX fetch functionality -->
+        <script>
+            // Select the 'onsubmit' form handler as the target for operations
+            document.getElementById('form1').onsubmit = function(e) {
+                // Use event handler to prevent default form action of sending data to server and refreshing page upon submit
+                e.preventDefault();
+                // Use fetch to send asynchronous request, send to specified route as defined in app.py
+                fetch('/todos/create', {
+                    // Send body of information that reads the 'description' value from form when submit button is clicked
+                    // Define fetch method
+                    method: 'POST',
+                    // Specify body of information to be sent as JSON string
+                    body: JSON.stringify({
+                        // Read the user entered value from the form by getting the key 'description' field
+                        'description': document.getElementById('description').value
+                    }),
+                    // Set headers
+                    headers: {
+                        // Set custom headers to declare specified content type
+                        'Content-Type': 'application/json'
+                    }
+                })
+            // Manipulate the response from the created promise
+            .then(function(response) {
+                // Parse string as JSON response
+                return response.json();
+            })
+            // Manipulate the JSON response
+            .then(function(jsonResponse) {
+                // Log response to console
+                console.log(jsonResponse);
+                // Create a constant and set it's value to create a new HTML '<li> list component for response results'
+                const liItem = document.createElement('LI');
+                // Specify the response description will be wrapped in the 'liitem' const values as HTML tags
+                liItem.innerHTML = jsonResponse['description'];
+                // Append a new child item to our 'todos' items returned from the default render_template route query in app.py
+                document.getElementById('todos').appendChild(liItem);
+                // If response successful, set class value of div with id='error' to 'hidden' so error message does not display to user
+                document.getElementById('error').className = 'hidden';
+            })
+            // Create function to execute upon error state returned from response
+            .catch(function() {
+                // If response fails, remove 'hidden' class value of div with id='error' so error message displays to user
+                document.getElementById('error').className = '';
+            })
+        }
+        </script>
+    </body>
+</html>
