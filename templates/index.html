@@ -20,7 +20,7 @@
             <input type="submit" value="Create" />
         </form>
         <!-- Loop through all records returned from default render_template route in app.py, and display each record as a list item -->
-        <ul>
+        <ul id="todos">
             {% for d in data %}
             <li>{{ d.description}}</li>
             {% endfor %}
